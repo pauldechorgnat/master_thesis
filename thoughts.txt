@@ -1,0 +1,10 @@
+# classes de gensim.models.poincare
+
+PoincareModel : train, use, evaluate
+PoincareBatch : computes Poincare distance for batch
+PoincareKeyedVectors : look up, distance
+PoincareRelation : stream relations fron tsv file
+NegativesBuffer : Buffer and return negative samples
+ReconstructionEvaluation : evaluate reconstruction
+LinkPredictionEvaluation : evaluate link prediction
+LexicalEntailmentEvaluation : evaluate lexical entailment

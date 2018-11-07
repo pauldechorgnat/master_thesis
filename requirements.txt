@@ -4,3 +4,5 @@ gensim
 nltk
 wget
 networkx
+tqdm
+autograd

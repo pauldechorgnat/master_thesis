@@ -1,7 +1,7 @@
 import wget
 import gzip
 import os
-
+import re
 
 # defining the URLs for the data sets
 URLS = {
@@ -30,7 +30,29 @@ def download_and_extract(url):
     return lines
 
 
+def format_data(file_path):
+    regex = re.compile(pattern=b"[0-9]+\t[0-9]+")
+    with gzip.open(file_path, "rb") as file:
+        file_content = file.read()
+        edges = [tuple(edge.split(b"\t")) for edge in regex.findall(string=file_content)]
+    return iter(edges)
+
+
+def import_data(path):
+    counter = 0
+    edges = []
+    regex = re.compile(b'[0-9]+')
+    with gzip.open(path, 'rb') as file:
+        for line in file:
+            if counter > 0:
+                edge = regex.findall(line)
+                if len(edge) == 2:
+                    edges.append(tuple(edge))
+            counter += 1
+
+    return edges
+
 if __name__ == "__main__":
-    for data_set_name in URLS.keys():
-        print(data_set_name)
-        _ = download_and_extract(URLS[data_set_name])
+
+    data_ = format_data(file_path='ca-GrQc.txt.gz')
+    print(data_)
