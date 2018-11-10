@@ -1,5 +1,5 @@
 from gensim.models.poincare import PoincareModel
-from downloads_utils import format_data
+from utils import format_data
 import matplotlib.pyplot as plt
 # import numpy as np
 

@@ -1,6 +1,6 @@
 import numpy as np
 from tqdm import tqdm
-from downloads_utils import import_data
+from utils import import_data
 import random
 import os
 import json
@@ -65,7 +65,7 @@ class Graph:
             self.negative[node] = set(self.negative[node])
 
         self.index2node = {index: node for node, index in self.node2index.items()}
-        pass
+        return
 
     def negative_sample(self, node, size=10):
         number_of_total_negative_samples = len(self.negative[node])
