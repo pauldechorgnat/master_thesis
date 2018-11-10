@@ -47,7 +47,7 @@ def import_data(path):
             if counter > 0:
                 edge = regex.findall(line)
                 if len(edge) == 2:
-                    edges.append(tuple(edge))
+                    edges.append(tuple([str(edge[0]), str(edge[1])]))
             counter += 1
 
     return edges
