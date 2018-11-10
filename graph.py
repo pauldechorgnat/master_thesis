@@ -50,29 +50,20 @@ class Graph:
 
         self.number_of_nodes = counter + 1
 
-        # changing the values of neighbours into a set
-        for node in self.neighbours:
-            self.neighbours[node] = set(self.neighbours[node])
+        # changing the values of neighbours list into a set
+        self.neighbours = dict(zip(self.neighbours.keys(), map(set, self.neighbours.values())))
 
-        # creating the negative samples
-        for index_node_a, node_a in tqdm(enumerate(self.nodes)):
-            for node_b in self.nodes:  # list(self.nodes)[index_node_a+1:]:
-                if node_b not in self.neighbours[node_a]:
-                    self.negative[node_a] = self.negative.get(node_a, []) + [node_b]
-                    self.negative[node_b] = self.negative.get(node_b, []) + [node_a]
+        # creating a dictionary for negative samples: the values are a set of all the nodes
+        self.negative = dict(zip(self.nodes, [set(self.nodes) for _ in range(self.number_of_nodes)]))
 
-        for node in self.negative:
-            self.negative[node] = set(self.negative[node])
+        # removing neighbours from negative samples
+        for node in tqdm(self.nodes):
+            self.negative[node].difference(self.neighbours[node])
+            self.negative[node].remove(node)
 
+        # creating an index to node dictionary
         self.index2node = {index: node for node, index in self.node2index.items()}
         return
-
-    def negative_sample(self, node, size=10):
-        number_of_total_negative_samples = len(self.negative[node])
-        probabilities = [i/number_of_total_negative_samples for i in range(1, number_of_total_negative_samples+1)]
-
-        outputs = [list(self.negative[node])[np.searchsorted(probabilities, random.random())] for _ in range(size)]
-        return outputs
 
     def save_data(self, path):
         # checking the existence of the folder
@@ -150,7 +141,7 @@ class Graph:
             neighbours = json.load(fp=neighbours_file)
         neighbours_ = dict()
         for n in neighbours.keys():
-            neighbours_[int(n)] = set([int(node) for node in neighbours[n]])
+            neighbours_[int(n)] = set(map(int, neighbours[n]))
         self.neighbours = neighbours_
 
         # loading negative nodes
@@ -159,28 +150,38 @@ class Graph:
             negative = json.load(fp=negative_file)
         negative_ = dict()
         for n in negative:
-            negative_[int(n)] = set([int(node) for node in negative[n]])
+            negative_[int(n)] = set(map(int, negative[n]))
         self.negative = negative_
 
         print('data loaded.')
         return
 
+    def negative_sample(self, node, size=10):
+        number_of_total_negative_samples = len(self.negative[node])
+        probabilities = [i/number_of_total_negative_samples for i in range(1, number_of_total_negative_samples+1)]
+
+        outputs = map(lambda x: random_choice(self.negative[node], probabilities), range(size))
+        return outputs
+
+
+def random_choice(set_of_nodes, probabilities):
+    return set_of_nodes[np.searchsorted(probabilities, random.random())]
 
 if __name__ == "__main__":
 
     graph = Graph()
-    graph.import_data('ca-GrQc.txt.gz', limit=1000)
-    print(len(graph.nodes))
-    print(graph.number_of_nodes)
-    print(graph.negative.keys())
+    graph.import_data('ca-GrQc.txt.gz', limit=None)
+    # print(len(graph.nodes))
+    # print(graph.number_of_nodes)
+    # print(graph.negative.keys())
     graph.negative_sample(node=0, size=10)
     graph.save_data(path='essai1')
     graph.load_data(path='essai1')
 
-    print(graph.edges)
-    input()
-    print(graph.nodes)
-    input()
-    print(graph.neighbours)
-    input()
-    print(graph.negative[0])
+    # print(graph.edges)
+    # input()
+    # print(graph.nodes)
+    # input()
+    # print(graph.neighbours)
+    # input()
+    # print(graph.negative[0])
