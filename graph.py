@@ -1,27 +1,9 @@
-from autograd import numpy as np
+import numpy as np
 from tqdm import tqdm
 from downloads_utils import import_data
 import random
 import os
 import json
-
-class Decoder(json.JSONDecoder):
-    def decode(self, s):
-        result = super().decode(s)  # result = super(Decoder, self).decode(s) for Python 2.x
-        return self._decode(result)
-
-    def _decode(self, o):
-        if isinstance(o, str) or isinstance(o, bytes):
-            try:
-                return int(o)
-            except ValueError:
-                return o
-        elif isinstance(o, dict):
-            return {k: self._decode(v) for k, v in o.items()}
-        elif isinstance(o, list):
-            return [self._decode(v) for v in o]
-        else:
-            return o
 
 
 class Graph:
@@ -184,14 +166,8 @@ class Graph:
         return
 
 
-
-
-
-
-
-
 if __name__ == "__main__":
-    np.random.uniform()
+
     graph = Graph()
     graph.import_data('ca-GrQc.txt.gz', limit=1000)
     print(len(graph.nodes))
