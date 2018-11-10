@@ -60,14 +60,16 @@ class PoincareVectors:
                     self.vectors.keys())
             )
         )
-        with open(os.path.join(path, 'embeddings', 'embedding' + postfix + '.json'), 'w', encoding='utf-8') as embedding_file:
+        with open(os.path.join(path, 'embeddings', 'embedding' + postfix + '.json'),
+                  'w', encoding='utf-8') as embedding_file:
             json.dump(obj=embeddings, fp=embedding_file)
 
         print('embeddings saved.')
         return
 
     def load_data(self, path, postfix):
-        with open(os.path.join(path, 'embeddings', 'embedding' + postfix + '.json'), 'r', encoding='utf-8') as embedding_file:
+        with open(os.path.join(path, 'embeddings', 'embedding' + postfix + '.json'),
+                  'r', encoding='utf-8') as embedding_file:
             embeddings = json.load(fp=embedding_file)
 
         print('formatting embeddings ...')
