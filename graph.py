@@ -1,12 +1,13 @@
-import numpy as np
 from tqdm import tqdm
-from utils import import_data
-import random
+from utils import import_data, quick_sample
 import os
 import json
 
 
 class Graph:
+    """
+    class to store nodes, edges, neighbours and unlinked nodes
+    """
     def __init__(self):
         self.nodes = set()
         self.edges = set()
@@ -18,6 +19,17 @@ class Graph:
         return
 
     def import_data(self, path, limit=None):
+        """
+        Imports graph data from a text.gz file
+        Data is supposed to be in the form of a list of edges:
+        - one edge per line
+        - nodes are separated by a \t
+        - the first line is just a header
+
+        :param path: path to the gzip file
+        :param limit: limit the number of edges to keep - default is None -> no limit
+        :return: nothing
+        """
         edges_raw = import_data(path)[:limit]
 
         counter = -1
@@ -66,6 +78,11 @@ class Graph:
         return
 
     def save_data(self, path):
+        """
+        saves the data into a folder
+        :param path: name of a folder where to put the data - if the folder does not exist, it will be created
+        :return: nothing
+        """
         # checking the existence of the folder
         try:
             os.stat(path=path)
@@ -110,6 +127,11 @@ class Graph:
         return
 
     def load_data(self, path):
+        """
+        loading data from a specified folder
+        :param path: path to the folder where the data is supposed to be kept
+        :return: nothing
+        """
         # loading indexes
         print('loading indexes ...')
         with open(os.path.join(path, 'index2node.json'), 'r', encoding='utf-8') as index2node_file:
@@ -157,15 +179,20 @@ class Graph:
         return
 
     def negative_sample(self, node, size=10):
+        """
+        given a node, returns a list of nodes that are not linked
+        :param node: node from which we want to return a negative sample
+        :param size: number of nodes to return
+        :return: a list of index corresponding to the negative samples
+        """
         number_of_total_negative_samples = len(self.negative[node])
         probabilities = [i/number_of_total_negative_samples for i in range(1, number_of_total_negative_samples+1)]
 
-        outputs = map(lambda x: random_choice(self.negative[node], probabilities), range(size))
+        outputs = map(lambda x: quick_sample(set_of_nodes=self.negative[node],
+                                             probabilities=probabilities),
+                      range(size))
         return outputs
 
-
-def random_choice(set_of_nodes, probabilities):
-    return set_of_nodes[np.searchsorted(probabilities, random.random())]
 
 if __name__ == "__main__":
 
@@ -175,8 +202,8 @@ if __name__ == "__main__":
     # print(graph.number_of_nodes)
     # print(graph.negative.keys())
     graph.negative_sample(node=0, size=10)
-    graph.save_data(path='essai1')
-    graph.load_data(path='essai1')
+    graph.save_data(path='test1')
+    graph.load_data(path='test1')
 
     # print(graph.edges)
     # input()
