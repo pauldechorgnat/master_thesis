@@ -2,6 +2,8 @@ import wget
 import gzip
 import os
 import re
+import numpy as np
+import random
 
 # defining the URLs for the data sets
 URLS = {
@@ -43,6 +45,16 @@ def import_data(path):
     return edges
 
 
+def quick_sample(set_of_nodes, probabilities):
+    """
+    quickly generate a random element from a set of nodes
+    :param set_of_nodes: set of nodes from which we want to return a random sample
+    :param probabilities: drawing probabilities in ascending order
+    :return: a random node index
+    """
+    return set_of_nodes[np.searchsorted(probabilities, random.random())]
+
+
 if __name__ == "__main__":
-    data_ = import_data(file_path='ca-GrQc.txt.gz')
+    data_ = import_data(path='ca-GrQc.txt.gz')
     print(data_)
