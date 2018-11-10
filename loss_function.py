@@ -117,9 +117,9 @@ class PoincareModel:
 def hyperbolic_distance(u, v):
     """
     computes the hyperbolic distance between u and v
-    :param u:
-    :param v:
-    :return:
+    :param u: a tensor of size [1, embedding_size, batch_size]
+    :param v: a tensor of size [1, embedding_size, batch_size]
+    :return: a tensor of size [1, batch_size] containing the distances
     """
     difference_norm = tf.norm(
         tf.subtract(x=u, y=v),
