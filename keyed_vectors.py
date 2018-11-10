@@ -4,6 +4,9 @@ import os
 
 
 class PoincareVectors:
+    """
+    class to initialize, store, load and return quickly embedding vectors
+    """
     def __init__(self,
                  index2node,
                  node2index,
@@ -24,6 +27,10 @@ class PoincareVectors:
         return
 
     def build_vectors(self):
+        """
+        instantiate embedding vectors
+        :return: nothing
+        """
         self.vectors = dict(
             zip(self.index2node.keys(),
                 map(lambda x: np.random.uniform(low=self.low_bound,
@@ -34,6 +41,11 @@ class PoincareVectors:
         )
 
     def get_vectors(self, list_of_index):
+        """
+        return vectors according to a list of index
+        :param list_of_index: list of index fron which we want the embedding vectors
+        :return: a list of vectors of dimension [len(list_of_index), embedding_dimension, 1]
+        """
 
         vectors = map(self.vectors.get, list_of_index)
 
@@ -41,6 +53,12 @@ class PoincareVectors:
         return vectors
 
     def save_data(self, path, postfix=''):
+        """
+        saves the embedding vectors in a specified folder in a json file
+        :param path: path to a folder - if it does not exist, it will be created with a subfolder 'embeddings'
+        :param postfix: postfix to add at the end of the name of the json file
+        :return: nothing
+        """
         try:
             os.stat(os.path.join(path, 'embeddings'))
         except FileNotFoundError:
@@ -68,6 +86,12 @@ class PoincareVectors:
         return
 
     def load_data(self, path, postfix):
+        """
+        loads embedding vectors from a json file in <path>/embeddings/embedding<postfix>.json
+        :param path: path to the folder containing the subfolder embeddings
+        :param postfix: postfix completing the name of the json file containing the embedding vectors
+        :return: nothing
+        """
         with open(os.path.join(path, 'embeddings', 'embedding' + postfix + '.json'),
                   'r', encoding='utf-8') as embedding_file:
             embeddings = json.load(fp=embedding_file)
