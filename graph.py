@@ -66,12 +66,15 @@ class Graph:
         self.neighbours = dict(zip(self.neighbours.keys(), map(set, self.neighbours.values())))
 
         # creating a dictionary for negative samples: the values are a set of all the nodes
-        self.negative = dict(zip(self.nodes, [set(self.nodes) for _ in range(self.number_of_nodes)]))
+        self.negative = dict()  # zip(self.nodes, [set(self.nodes) for _ in range(self.number_of_nodes)]))
 
         # removing neighbours from negative samples
+        nodes = set(self.nodes)
+        del edges_raw
+
         for node in tqdm(self.nodes):
-            self.negative[node].difference(self.neighbours[node])
-            self.negative[node].remove(node)
+            self.negative[node] = nodes.difference(self.neighbours[node])
+            # self.negative[node].remove(node)
 
         # creating an index to node dictionary
         self.index2node = {index: node for node, index in self.node2index.items()}
@@ -191,19 +194,21 @@ class Graph:
         outputs = map(lambda x: quick_sample(set_of_nodes=self.negative[node],
                                              probabilities=probabilities),
                       range(size))
-        return outputs
+        return list(outputs)
 
 
 if __name__ == "__main__":
 
     graph = Graph()
-    graph.import_data('ca-GrQc.txt.gz', limit=None)
+    graph.import_data('ca-CondMat.txt.gz', limit=None)
     # print(len(graph.nodes))
     # print(graph.number_of_nodes)
     # print(graph.negative.keys())
     graph.negative_sample(node=0, size=10)
     graph.save_data(path='test1')
     graph.load_data(path='test1')
+    # node = 0
+    # print(node in graph.neighbours[0])
 
     # print(graph.edges)
     # input()

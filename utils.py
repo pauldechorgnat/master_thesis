@@ -52,7 +52,7 @@ def quick_sample(set_of_nodes, probabilities):
     :param probabilities: drawing probabilities in ascending order
     :return: a random node index
     """
-    return set_of_nodes[np.searchsorted(probabilities, random.random())]
+    return list(set_of_nodes)[np.searchsorted(probabilities, random.random())]
 
 
 if __name__ == "__main__":

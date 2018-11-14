@@ -3,9 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-class PoincareModel:
+class PoincareTrainer:
     def __init__(self,
-                 graph,
                  embedding_size=100,
                  negative_sample_size=10,
                  batch_size=10,
@@ -13,9 +12,6 @@ class PoincareModel:
                  learning_rate=.001,
                  learning_rate_burn_in=0.1,
                  epochs_burn_in=10):
-
-        # feeding the graph
-        self.graph = graph
 
         # parameters of the embedding
         self.embedding_size = embedding_size
@@ -135,8 +131,7 @@ def hyperbolic_distance(u, v):
 
 if __name__ == '__main__':
 
-    model = PoincareModel(graph=None)
-
+    model = PoincareTrainer
     print(model.input_node.shape)
     embedding_dimension = 100
     negative_samples = 10
